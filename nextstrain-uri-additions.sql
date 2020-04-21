@@ -38,9 +38,11 @@ WHERE  {
                 :dbpedia_country_id  ?countryURI .
             FILTER (?countryURI IN (<http://dbpedia.org/resource/Ghana>, <http://dbpedia.org/resource/Nigeria>))
           }
-       }
+       } ;
 
 -- Test 2
+
+SPARQL
 
 SELECT  xsd:date(?s9) as ?date_submitted 
         ?s11 as ?dbpedia_country_id 
@@ -78,4 +80,4 @@ WHERE
                     )
             )
   }
-ORDER BY DESC 1
+ORDER BY DESC 1 ;
