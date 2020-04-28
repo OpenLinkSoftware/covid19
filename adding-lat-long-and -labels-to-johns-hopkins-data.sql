@@ -194,7 +194,7 @@ WHERE
                 # BIND (IRI(CONCAT('https://bing.com/covid/local/',LCASE(REPLACE(?s4,' ','')))) as ?bingCountryURL)
                 BIND (
                         IF ( 
-                                !CONTAINS(?country,'US'),
+                                !CONTAINS(?s4,'US'),
                                 IRI(CONCAT('https://bing.com/covid/local/',LCASE(REPLACE(?s4,' ','')),'#')), 
                                 IRI('https://bing.com/covid/local/unitedstates#') 
                             ) 
@@ -202,7 +202,7 @@ WHERE
                      )
                 BIND (
                         IF ( 
-                                !CONTAINS(?country,'US'),
+                                !CONTAINS(?s4,'US'),
                                 IRI(CONCAT('https://bing.com/covid/local/',LCASE(REPLACE(?s4,' ','')),'#')), 
                                 IRI('https://bing.com/covid/local/unitedstates') 
                            ) 
@@ -224,3 +224,5 @@ WHERE
                      )
           }
     }  ;
+
+
