@@ -1,11 +1,11 @@
+
 CREATE PROCEDURE COVID19..JOHNS_HOPKINS_DAILY ()
 {
 LOG_ENABLE (2, 1); 
 
 -- Geo coordinates
 
-SPARQL
-CLEAR GRAPH <urn:johns-hopkins:covid19:daily:reports:geo>   ;
+-- SPARQL CLEAR GRAPH <urn:johns-hopkins:covid19:daily:reports:geo>   ;
 
 SPARQL
 PREFIX g: <http://www.w3.org/2003/01/geo/wgs84_pos#>
@@ -196,7 +196,7 @@ WHERE
                 # BIND (IRI(CONCAT('https://bing.com/covid/local/',LCASE(REPLACE(?s4,' ','')))) as ?bingCountryURL)
                 BIND (
                         IF ( 
-                                !CONTAINS(?country,'US'),
+                                !CONTAINS(?s4,'US'),
                                 IRI(CONCAT('https://bing.com/covid/local/',LCASE(REPLACE(?s4,' ','')),'#')), 
                                 IRI('https://bing.com/covid/local/unitedstates#') 
                             ) 
@@ -204,7 +204,7 @@ WHERE
                      )
                 BIND (
                         IF ( 
-                                !CONTAINS(?country,'US'),
+                                !CONTAINS(?s4,'US'),
                                 IRI(CONCAT('https://bing.com/covid/local/',LCASE(REPLACE(?s4,' ','')),'#')), 
                                 IRI('https://bing.com/covid/local/unitedstates') 
                            ) 
