@@ -170,6 +170,7 @@ WHERE
 SPARQL
 
 PREFIX : <urn:johns-hopkins:covid19:daily:reports#> 
+PREFIX jh: <urn:johns-hopkins:covid19:fips:lookup#>
 
 INSERT 
    {  
@@ -177,11 +178,13 @@ INSERT
                 {
                         ?s1 :dbpedia_country_id ?countryURI ;
                             schema:mainEntityOfPage ?bingCountryURL ;
-                            skos:related ?divocCountryURL .
+                            skos:related ?divocCountryURL ;
+                            schema:relatedLink ?owidURL . 
 
-                        ?countryURI owl:sameAs ?bingCountryURI, ?divocCountryURI . 
+                        ?countryURI owl:sameAs ?bingCountryURI, ?divocCountryURI, ?owidURI . 
                         ?bingCountryURI schema:url ?bingCountryURL .
                         ?divocCountryURI schema:url ?divocCountryURL . 
+                        ?owidURI schema:url ?owidURL . 
                 }
    }
 WHERE
@@ -222,6 +225,14 @@ WHERE
                             IRI(CONCAT('https://91-divoc.com/pages/covid-visualization/?chart=countries&highlight=',encode_for_uri(bif:INITCAP(LCASE(?s4))),'&show=50&trendline=default&y=fixed&scale=log&data=cases')) 
                         ) AS ?divocCountryURL
                      )
+          }
+
+        GRAPH <urn:johns-hopkins:covid19:fips:lookup>
+          {
+                  ?s jh:Country_Region ?s4; 
+                     jh:iso3 ?isoCode . 
+                  BIND (IRI(CONCAT('https://ourworldindata.org/coronavirus?country=',?isoCode,'#')) as ?owidURI)
+                  BIND (IRI(CONCAT('https://ourworldindata.org/coronavirus?country=',?isoCode)) as ?owidURL)
           }
     }  ;
 
