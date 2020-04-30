@@ -178,13 +178,11 @@ INSERT
                 {
                         ?s1 :dbpedia_country_id ?countryURI ;
                             schema:mainEntityOfPage ?bingCountryURL ;
-                            skos:related ?divocCountryURL ;
-                            schema:relatedLink ?owidURL . 
+                            skos:related ?divocCountryURL .
 
                         ?countryURI owl:sameAs ?bingCountryURI, ?divocCountryURI, ?owidURI . 
                         ?bingCountryURI schema:url ?bingCountryURL .
                         ?divocCountryURI schema:url ?divocCountryURL . 
-                        ?owidURI schema:url ?owidURL . 
                 }
    }
 WHERE
@@ -226,14 +224,59 @@ WHERE
                         ) AS ?divocCountryURL
                      )
           }
-
-        GRAPH <urn:johns-hopkins:covid19:fips:lookup>
-          {
-                  ?s jh:Country_Region ?s4; 
-                     jh:iso3 ?isoCode . 
-                  BIND (IRI(CONCAT('https://ourworldindata.org/coronavirus?country=',?isoCode,'#')) as ?owidURI)
-                  BIND (IRI(CONCAT('https://ourworldindata.org/coronavirus?country=',?isoCode)) as ?owidURL)
-          }
+        
     }  ;
+
+-- Our World In Data Integration
+
+SPARQL CLEAR GRAPH <urn:dbpedia:country:state:country:fips:owid:mapping>   ;
+
+SPARQL
+
+PREFIX : <urn:johns-hopkins:covid19:daily:reports#> 
+PREFIX jh: <urn:johns-hopkins:covid19:fips:lookup#>
+
+INSERT 
+   {  
+        GRAPH <urn:dbpedia:country:state:country:fips:owid:mapping>  
+                {
+                        ?s owl:sameAs ?countryURI ; 
+                           jh:owid_Country_ID ?owidURI ;
+                           jh:owid_Country_Tests_Per_1000 ?owidCountryTestsURI ;
+                           schema:name ?label .  
+                        ?owidURI schema:mainEntityOfPage ?owidURL .
+
+                        jh:owid_Country_ID a rdf:Property ;
+                                 rdfs:label "OWID Country ID" ;
+                                 rdfs:comment """Our World In Data ID """ . 
+
+                        jh:owid_Country_Tests_Per_1000 a rdf:Property ;
+                                 rdfs:label "Country Tests per 1000" ;
+                                 rdfs:comment """Test in a country performed per 1000 human inhabitants.""" . 
+                                 
+                }
+   }
+WHERE
+{
+        { 
+                SELECT DISTINCT ?s ?owidURI ?owidURL ?countryURI ?label ?owidCountryTestsURI ?owidCountryTestsURL
+                WHERE 
+                   {  
+                        GRAPH <urn:johns-hopkins:covid19:fips:lookup>
+                                {
+                                        ?s jh:Country_Region ?s4;
+                                        jh:iso3 ?isoCode ;
+                                        jh:Combined_Key ?label . 
+                                        BIND (IRI(CONCAT('http://dbpedia.org/resource/',REPLACE(?s4," ","_"))) as ?countryURI)
+                                        BIND (IRI(CONCAT('https://ourworldindata.org/coronavirus?country=',?isoCode,'#')) as ?owidURI)
+                                        BIND (IRI(CONCAT('https://ourworldindata.org/coronavirus?country=',?isoCode)) as ?owidURL)
+                                        BIND (IRI(CONCAT('https://ourworldindata.org/grapher/total-tests-per-thousand-since-100th-case?country=',?isoCode,'#')) as ?owidCountryTestsURI)
+                                        BIND (IRI(CONCAT('https://ourworldindata.org/grapher/total-tests-per-thousand-since-100th-case?country=',?isoCode)) as ?owidCountryTestsURL)
+                                       
+                                }
+                   }
+        }
+} ;
+
 
 
